@@ -22,14 +22,20 @@
 
 		<div class="buttons flex justify-end space-x-[8px] my-[16px]">
 			<UButton label="Wstecz" @click="$emit('prevView')" />
-			<UButton label="Zamów" v-if="selected === 0" />
-			<UButton type="submit" v-else label="Zamów" />
+			<UButton type="submit" label="Zamów" v-if="selected === 1" />
+			<UButton v-else label="Zamów" @click="saveOrder()" />
 		</div>
 	</UForm>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { z } from 'zod'
+import { useOrderStore } from '~/store/orderStore'
+import { useCartStore } from '~/store/cartStore'
+
+const supabase = useSupabaseClient()
+const orderStore = useOrderStore()
+const cartStore = useCartStore()
 
 const emit = defineEmits(['prevView'])
 
@@ -66,6 +72,10 @@ const options = [
 		label: 'Dostawa do domu',
 	},
 ]
+
+const saveOrder = () => {
+	orderStore.saveOrder(selected.value)
+}
 
 const selected = ref()
 </script>

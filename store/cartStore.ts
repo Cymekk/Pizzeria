@@ -12,6 +12,10 @@ export const useCartStore = defineStore('cartStore', {
 	},
 
 	actions: {
+		init() {
+			this.getCart()
+		},
+
 		addToCart(item: CartItem): void {
 			this.cart.push(item)
 			this.saveCart()
@@ -33,7 +37,6 @@ export const useCartStore = defineStore('cartStore', {
 			this.cart = JSON.parse(localStorage.getItem('cart') as string)
 				? JSON.parse(localStorage.getItem('cart') as string)
 				: []
-			console.log(this.cart)
 		},
 
 		saveCart() {

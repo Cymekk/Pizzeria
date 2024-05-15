@@ -6,7 +6,10 @@ export default defineNuxtConfig({
 		typeCheck: true,
 	},
 
-	modules: ['@nuxt/ui', '@nuxtjs/google-fonts', '@nuxtjs/color-mode', '@pinia/nuxt'],
+	modules: ['@nuxt/ui', '@nuxtjs/google-fonts', '@nuxtjs/color-mode', '@pinia/nuxt', '@nuxtjs/supabase'],
+	supabase: {
+		redirect: false,
+	},
 	googleFonts: {
 		families: {
 			Roboto: [400, 700],

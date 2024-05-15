@@ -41,6 +41,8 @@ const title = computed(() => {
 const decrementStep = () => {
 	step.value--
 }
+
+
 </script>
 
 <style lang="scss" scoped></style>
