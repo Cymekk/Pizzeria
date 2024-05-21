@@ -16,7 +16,9 @@
 						<li>Strona główna</li>
 					</NuxtLink>
 					<NuxtLink to="/menu" @click="isOpen = false"> <li>menu</li></NuxtLink>
-					<li>sprawdź status zamówienia</li>
+					<NuxtLink to="/checkOrder" @click="isOpen = false">
+						<li>sprawdź status zamówienia</li>
+					</NuxtLink>
 					<li>kontakt</li>
 				</ul>
 			</div>

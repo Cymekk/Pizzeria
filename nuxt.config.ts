@@ -17,7 +17,6 @@ export default defineNuxtConfig({
 			Poppins: [400, 700],
 		},
 	},
-
 	app: {
 		head: {
 			bodyAttrs: {

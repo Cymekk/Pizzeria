@@ -2,8 +2,8 @@
 	<URadioGroup v-model="selected" legend="Wybierz sposób dostawy" :options="options" class="my-[16px]" />
 	<UForm :schema="schema" :state="state" @submit="onSubmit">
 		<div class="form space-y-[12px]" v-if="selected === 1">
-			<UFormGroup label="Numer Telefonu:" name="phoneNumber">
-				<UInput type="number" v-model="state.phoneNumber" />
+			<UFormGroup label="Adres email:" name="email">
+				<UInput type="email" v-model="state.email" />
 			</UFormGroup>
 
 			<UFormGroup label="Miejscowość" name="city">
@@ -22,28 +22,31 @@
 
 		<div class="buttons flex justify-end space-x-[8px] my-[16px]">
 			<UButton label="Wstecz" @click="$emit('prevView')" />
-			<UButton type="submit" label="Zamów" v-if="selected === 1" />
-			<UButton v-else label="Zamów" @click="saveOrder()" />
+			<UButton type="submit" label="Zamów" v-if="selected === 1" :loading="isLoading" />
+			<UButton v-else label="Zamów" @click="saveOrder()" :disabled="selected === undefined" />
 		</div>
 	</UForm>
+
+	<OrderModalComponent v-model="isOpen" :id="id" />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { z } from 'zod'
 import { useOrderStore } from '~/store/orderStore'
-import { useCartStore } from '~/store/cartStore'
 
-const supabase = useSupabaseClient()
 const orderStore = useOrderStore()
-const cartStore = useCartStore()
+const id = computed(() => {
+	return orderStore.id
+})
+
+const isLoading = computed(() => {
+	return orderStore.isLoading
+})
 
 const emit = defineEmits(['prevView'])
 
 const schema = z.object({
-	phoneNumber: z
-		.number({ message: 'Pole Nume Telefonu jest wymagane' })
-		.gte(100000000, 'Numer telefonu powinien składać się z 9 cyfr')
-		.lte(999999999, 'Numer telefonu powinien składać się z 9 cyfr'),
+	email: z.string().email('Niepoprawny adres email'),
 	city: z.string().min(3, 'Miejscowość powinna zawierać conajmniej 3 znaki'),
 	street: z.string().min(3, 'Ulica powinna zawierać conajmniej 3 znaki'),
 	homeNumber: z.number().gte(1).lte(1000),
@@ -51,16 +54,20 @@ const schema = z.object({
 })
 
 const state = reactive({
-	phoneNumber: '',
+	email: '',
 	city: '',
 	street: '',
 	homeNumber: '',
 	flatNumber: '',
 })
 
-const onSubmit = () => {
-	console.log('hej')
-}
+const initialState = reactive({
+	email: '',
+	city: '',
+	street: '',
+	homeNumber: '',
+	flatNumber: '',
+})
 
 const options = [
 	{
@@ -73,11 +80,19 @@ const options = [
 	},
 ]
 
+const onSubmit = () => {
+	saveOrder()
+}
+
 const saveOrder = () => {
-	orderStore.saveOrder(selected.value)
+	orderStore.saveOrder(selected.value, state)
+	isOpen.value = true
+	Object.assign(state, initialState)
 }
 
 const selected = ref()
+
+const isOpen = ref(false)
 </script>
 
 <style scoped></style>
