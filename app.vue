@@ -6,7 +6,7 @@
 <script setup>
 //imports
 import { useCartStore } from './store/cartStore.ts'
-import { useOrderStore } from './store/orderStore.js'
+import { useOrderStore } from './store/orderStore.ts'
 
 //store
 const cartStore = useCartStore()

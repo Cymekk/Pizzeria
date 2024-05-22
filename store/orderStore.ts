@@ -1,6 +1,14 @@
 import { defineStore } from 'pinia'
 import { useCartStore } from './cartStore'
 
+interface Orders {
+	id: String
+	created_at: Date
+	delivery: Boolean
+	deliveryAddress: String
+	orderDetails: any
+}
+
 let supabase
 let cartStore
 
@@ -13,7 +21,6 @@ export const useOrderStore = defineStore('orderStore', {
 		init() {
 			supabase = useSupabaseClient()
 			cartStore = useCartStore()
-			this.fetchProducts()
 		},
 
 		async saveOrder(deliveryVal, state) {
@@ -76,7 +83,7 @@ export const useOrderStore = defineStore('orderStore', {
 
 		async fetchProducts() {
 			try {
-				const data = await useAsyncData('orders', async () => {
+				const { data } = await useAsyncData('orders', async () => {
 					const { data, error } = await supabase.from('orders').select()
 
 					if (error) return []
@@ -84,10 +91,23 @@ export const useOrderStore = defineStore('orderStore', {
 					return data
 				})
 
-				this.orders = data.data.value
+				this.orders = data.value
 			} finally {
-				console.log(this.orders)
+				return
 			}
+		},
+
+		checkOrderStatus(id: String) {
+			const newObj = this.orders.find(el => {
+				return el['id'] == '3d478e2'
+			})
+
+			let status: String
+
+			if (newObj !== undefined) status = newObj['status']
+			else status = 'Błąd, brak zamówienia o podanym ID'
+
+			return status
 		},
 	},
 })
